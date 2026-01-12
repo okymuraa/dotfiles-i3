@@ -1,5 +1,3 @@
-
-
 [colors]
 background = #2E3440
 background-alt = #39404f
@@ -24,7 +22,7 @@ radius = 2
 offset-x = 0
 offset-y = 0
 
-fixed-center  = true
+fixed-center = true
 
 background = ${colors.background}
 foreground = ${colors.foreground}
@@ -39,12 +37,13 @@ padding-right = 1
 
 module-margin = 1
 
-font-0 = FiraCode Nerd Font Propo,FiraCode Nerd Font Propo Med:style=Medium,Regular;1
-font-1 = FiraCode Nerd Font Propo:style=Regular;1 
+font-0 = monospace:size=11;1
+font-1 = Symbols Nerd Font Mono:size=14;2
+font-2 = Font Awesome 6 Free Solid:size=11;2
 
 modules-left = xworkspaces xwindow sys-uptime info-hackspeed
 modules-center = spotify spotify-prev spotify-play-pause spotify-next
-modules-right = systray pulseaudio xkeyboard filesystem memory cpu date powermenu
+modules-right = systray battery pulseaudio xkeyboard filesystem memory cpu date powermenu
 
 cursor-click = pointer
 
@@ -89,13 +88,37 @@ label = %title:0:60:...%
 label-maxlen = 16
 label-empty = Desktop
 
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = AC
+full-at = 98
+
+format-charging = <ramp-capacity> <label-charging>
+format-charging-foreground = ${colors.success}
+label-charging = %percentage%%
+
+format-discharging = <ramp-capacity> <label-discharging>
+format-discharging-foreground = ${colors.warning}
+label-discharging = %percentage%%
+
+format-full = <ramp-capacity> <label-full>
+format-full-foreground = ${colors.success}
+label-full = Full
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+
 [module/filesystem]
 type = internal/fs
 interval = 25
 
 mount-0 = /
 
-label-mounted = %{F#81A1C1} %{F-}%percentage_used%%
+label-mounted = %{F#81A1C1} %{F-}%percentage_used%%
 
 label-unmounted = %mountpoint% not mounted
 label-unmounted-foreground = ${colors.warning}
@@ -107,11 +130,11 @@ format-volume = <ramp-volume> <label-volume>
 
 label-volume = %percentage%%
 
-ramp-volume-0 = 
+ramp-volume-0 = 
 ramp-volume-0-foreground = ${colors.function}
-ramp-volume-1 = 
+ramp-volume-1 = 
 ramp-volume-1-foreground = ${colors.function}
-ramp-volume-2 = 
+ramp-volume-2 = 
 ramp-volume-2-foreground = ${colors.urgent}
 
 label-muted = muted
@@ -124,19 +147,19 @@ type = internal/xkeyboard
 blacklist-0 = num lock
 bufferlist-1 = scroll lock
 
-format-prefix = " "
+format-prefix = " "
 format-prefix-foreground = ${colors.function}
 
 label-layout = %layout%
 
-label-indicator-on-capslock =  CL
+label-indicator-on-capslock =  CL
 label-indicator-on-capslock-foreground = ${colors.warning}
 label-indicator-on-capslock-underline = ${colors.warning}
 
 [module/memory]
 type = internal/memory
 interval = 2
-format-prefix = " "
+format-prefix = " "
 format-prefix-foreground = ${colors.nord9}
 label = %percentage_used:2%%
 
@@ -158,17 +181,17 @@ label = %date%
 label-margin = 0
 label-foreground = ${colors.foreground}
 
-format-prefix = " "
+format-prefix = " "
 format-prefix-foreground = ${colors.nord9}
 
 [module/powermenu]
 type = custom/text
 
-format = 
+format = 
 format-background = ${colors.background}
 format-foreground = ${colors.nord7}
 
-click-left = ~/.config/rofi/powermenu/type-4/powermenu.sh
+click-left = ~/.local/bin/powermenu.sh
 
 [module/info-cava]
 type = custom/script
@@ -180,7 +203,7 @@ type = custom/script
 exec = ~/.config/polybar/scripts/info-hackspeed.sh
 tail = true
 
-format-prefix = " " 
+format-prefix = " " 
 format-prefix-foreground = ${colors.nord9}
 
 [module/sys-uptime]
@@ -188,14 +211,14 @@ type = custom/script
 exec = ~/.config/polybar/scripts/sys-uptime.sh
 interval = 30
 
-format-prefix = " "
+format-prefix = " "
 format-prefix-foreground = ${colors.nord9}
 
 [module/spotify]
 type = custom/script
 tail = true
 interval = 1
-format-prefix = " "
+format-prefix = " "
 format-prefix-foreground = ${colors.nord9}
 format = <label>
 exec = ~/.config/polybar/scripts/scroll_spotify_status.sh
@@ -227,3 +250,4 @@ screenchange-reload = true
 pseudo-transparency = true
 
 ; vim:ft=dosini
+
