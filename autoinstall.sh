@@ -115,7 +115,8 @@ sudo pacman -S --needed --noconfirm \
     xdotool \
     xorg-xrandr \
     xorg-xev \
-    arandr
+    arandr \
+    local-send
 
 # Herramientas de monitoreo
 sudo pacman -S --needed --noconfirm \
