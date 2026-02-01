@@ -137,7 +137,8 @@ sudo pacman -S --needed --noconfirm \
     curl \
     wget \
     unzip \
-    zip
+    zip \
+    atuin
 
 
 
