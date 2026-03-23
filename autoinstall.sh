@@ -52,14 +52,14 @@ fi
 # 1. ACTUALIZAR SISTEMA
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-echo -e "${BLUE}[1/8]${NC} Actualizando sistema..."
+echo -e "${BLUE}[1/9]${NC} Actualizando sistema..."
 sudo pacman -Syu --noconfirm
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 2. INSTALAR PAQUETES
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-echo -e "${BLUE}[2/8]${NC} Instalando paquetes..."
+echo -e "${BLUE}[2/9]${NC} Instalando paquetes..."
 
 # WM y componentes visuales
 sudo pacman -S --needed --noconfirm \
@@ -67,13 +67,12 @@ sudo pacman -S --needed --noconfirm \
     polybar \
     rofi \
     picom \
-    dunst \
     nitrogen \
     feh
 
 # Terminal y shell
 sudo pacman -S --needed --noconfirm \
-    alacritty \
+    ghostty \
     zsh \
     zsh-completions
 
@@ -115,8 +114,7 @@ sudo pacman -S --needed --noconfirm \
     xdotool \
     xorg-xrandr \
     xorg-xev \
-    arandr \
-    local-send
+    arandr
 
 # Herramientas de monitoreo
 sudo pacman -S --needed --noconfirm \
@@ -141,8 +139,6 @@ sudo pacman -S --needed --noconfirm \
     zip \
     atuin
 
-
-
 echo -e "${GREEN}✅ Paquetes instalados${NC}"
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -150,26 +146,30 @@ echo -e "${GREEN}✅ Paquetes instalados${NC}"
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 if ! command -v yay &> /dev/null; then
-    echo -e "${BLUE}[3/8]${NC} Instalando yay..."
+    echo -e "${BLUE}[3/9]${NC} Instalando yay..."
     cd /tmp
     git clone https://aur.archlinux.org/yay.git
     cd yay
     makepkg -si --noconfirm
     cd -
 else
-    echo -e "${BLUE}[3/8]${NC} yay ya está instalado"
+    echo -e "${BLUE}[3/9]${NC} yay ya está instalado"
 fi
 
-yay -S spotify --noconfirm
+# Paquetes AUR
+echo -e "${BLUE}[3/9]${NC} Instalando paquetes AUR..."
+yay -S --needed --noconfirm \
+    spotify \
+    localsend-bin
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 4. COPIAR CONFIGURACIONES
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-echo -e "${BLUE}[4/8]${NC} Copiando configuraciones..."
+echo -e "${BLUE}[4/9]${NC} Copiando configuraciones..."
 
 # Crear directorios necesarios
-mkdir -p ~/.config/{i3,polybar,picom,rofi,dunst,ranger}
+mkdir -p ~/.config/{i3,polybar/scripts,picom,rofi,ranger,ghostty}
 mkdir -p ~/.local/bin
 mkdir -p ~/Pictures/Wallpapers
 
@@ -178,8 +178,8 @@ cp -r config/i3/* ~/.config/i3/
 cp -r config/polybar/* ~/.config/polybar/
 cp -r config/picom/* ~/.config/picom/
 cp -r config/rofi/* ~/.config/rofi/
-cp -r config/dunst/* ~/.config/dunst/ 2>/dev/null
-cp -r scripts/* ~/.local/bin/
+cp -r config/ghostty/* ~/.config/ghostty/
+cp -r config/scripts/* ~/.local/bin/
 cp .zshrc ~/
 cp .xbindkeysrc ~/
 
@@ -197,7 +197,7 @@ echo -e "${GREEN}✅ Configuraciones copiadas${NC}"
 # 5. CONFIGURAR SERVICIOS
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-echo -e "${BLUE}[5/8]${NC} Configurando servicios..."
+echo -e "${BLUE}[5/9]${NC} Configurando servicios..."
 
 # Habilitar NetworkManager
 sudo systemctl enable --now NetworkManager
@@ -215,12 +215,12 @@ echo -e "${GREEN}✅ Servicios configurados${NC}"
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 if [ ! -d ~/.oh-my-zsh ]; then
-    echo -e "${BLUE}[6/8]${NC} Instalando Oh My Zsh..."
+    echo -e "${BLUE}[6/9]${NC} Instalando Oh My Zsh..."
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-    # Restaurar .zshrc
+    # Restaurar .zshrc (el instalador lo sobreescribe)
     cp .zshrc ~/
 else
-    echo -e "${BLUE}[6/8]${NC} Oh My Zsh ya está instalado"
+    echo -e "${BLUE}[6/9]${NC} Oh My Zsh ya está instalado"
 fi
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -228,22 +228,36 @@ fi
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 if ! command -v atuin &> /dev/null; then
-    echo -e "${BLUE}[7/8]${NC} Instalando atuin..."
+    echo -e "${BLUE}[7/9]${NC} Instalando atuin..."
     sudo pacman -S --noconfirm atuin
-    
-    # Agregar a zshrc si no existe
+
     if ! grep -q "atuin init zsh" ~/.zshrc; then
         echo 'eval "$(atuin init zsh)"' >> ~/.zshrc
     fi
 else
-    echo -e "${BLUE}[7/8]${NC} atuin ya está instalado"
+    echo -e "${BLUE}[7/9]${NC} atuin ya está instalado"
 fi
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# 8. CONFIGURACIONES FINALES
+# 8. DETECTAR INTERFAZ DE RED
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-echo -e "${BLUE}[8/8]${NC} Configuraciones finales..."
+echo -e "${BLUE}[8/9]${NC} Detectando interfaz WiFi..."
+
+WIFI_IF=$(ip link show | grep -E '^[0-9]+: w' | head -1 | awk '{print $2}' | tr -d ':')
+
+if [ -n "$WIFI_IF" ]; then
+    sed -i "s/^interface = wlan0/interface = $WIFI_IF/" ~/.config/polybar/config.ini
+    echo -e "${GREEN}✅ Interfaz WiFi configurada: ${WIFI_IF}${NC}"
+else
+    echo -e "${YELLOW}⚠️  No se detectó interfaz WiFi. Edita ~/.config/polybar/config.ini manualmente${NC}"
+fi
+
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 9. CONFIGURACIONES FINALES
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+echo -e "${BLUE}[9/9]${NC} Configuraciones finales..."
 
 # Cambiar shell a zsh
 if [ "$SHELL" != "/usr/bin/zsh" ]; then
@@ -273,18 +287,18 @@ echo "2. ${GREEN}En el login manager, selecciona 'i3'${NC}"
 echo "3. ${GREEN}Inicia sesión${NC}"
 echo ""
 echo -e "${BLUE}⌨️  Atajos importantes:${NC}"
-echo "  • Mod+Enter           Terminal"
+echo "  • Mod+Enter           Terminal (ghostty)"
 echo "  • Mod+Space           Rofi launcher"
-echo "  • Mod+Shift+q         Cerrar ventana"
+echo "  • Mod+q               Cerrar ventana"
+echo "  • Mod+Shift+q         Power menu"
 echo "  • Mod+1-9             Cambiar workspace"
 echo "  • Mod+Left/Right      Workspace anterior/siguiente"
-echo "  • Mod+Shift+e         Power menu"
 echo "  • Mod+r               Modo resize"
 echo ""
 echo -e "${YELLOW}🔧 Configuración WiFi:${NC}"
-echo "  Edita: /etc/NetworkManager/system-connections/TU_RED.nmconnection"
-echo "  Agrega: psk-flags=0"
-echo "  Y tu contraseña: psk=TU_CONTRASEÑA"
+echo "  Si la detección automática falló, edita:"
+echo "  ~/.config/polybar/config.ini → interface = TU_INTERFAZ"
+echo "  (usa 'ip link show' para ver el nombre)"
 echo ""
 echo -e "${GREEN}¡Disfruta tu nuevo setup i3wm!${NC}"
 echo ""

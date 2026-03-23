@@ -1,0 +1,8 @@
+# Mapear botones del mouse a teclas especiales
+"xdotool key XF86AudioRaiseVolume"
+    b:9
+
+"xdotool key XF86AudioLowerVolume"
+    b:8
+
+
